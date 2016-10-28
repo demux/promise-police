@@ -6,21 +6,31 @@ class SourceInline(admin.StackedInline):
     model = PromiseSource
 
 
+class ModelAdmin(admin.ModelAdmin):
+    def save_model(self, request, obj, form, change):
+        if request:
+            if obj.created_by:
+                obj.modified_by = request.user
+            else:
+                obj.created_by = request.user
+        obj.save()
+
+
 @admin.register(Promise)
-class PromiseAdmin(admin.ModelAdmin):
+class PromiseAdmin(ModelAdmin):
     inlines = (SourceInline,)
 
 
 @admin.register(Person)
-class PersonAdmin(admin.ModelAdmin):
+class PersonAdmin(ModelAdmin):
     pass
 
 
 @admin.register(Party)
-class PartyAdmin(admin.ModelAdmin):
+class PartyAdmin(ModelAdmin):
     pass
 
 
 @admin.register(Source)
-class SourceAdmin(admin.ModelAdmin):
+class SourceAdmin(ModelAdmin):
     pass

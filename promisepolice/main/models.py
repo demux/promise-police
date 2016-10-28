@@ -17,15 +17,16 @@ class CommonModel(models.Model):
     created_by = models.ForeignKey(User, null=True, editable=False, related_name='+')
     modified_by = models.ForeignKey(User, null=True, editable=False, related_name='+')
 
-    def save(self, commit=True):
-        obj = super().save(commit=False)
+    # def save(self, commit=True, request=None):
+    #     obj = super().save(commit=False)
 
-        if obj.created_by:
-            obj.modified_by = request.user
-        else:
-            obj.created_by = request.user
+    #     if request:
+    #         if obj.created_by:
+    #             obj.modified_by = request.user
+    #         else:
+    #             obj.created_by = request.user
 
-        obj.save(commit=commit)
+    #     obj.save()
 
     class Meta:
         abstract = True
