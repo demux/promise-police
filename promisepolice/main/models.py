@@ -38,19 +38,28 @@ class Party(CommonModel):
     about = models.TextField(blank=True)
     website = models.URLField(max_length=255, blank=True)
 
+    def __str__(self):
+        return '%s (X%s)' % (self.name, self.ident)
+
 
 class Person(CommonModel):
     name = models.CharField(max_length=255)
     party = models.ForeignKey(Party, blank=True, null=True, related_name='members')
-    ssn = models.CharField(max_length=50)
+    ssn = models.CharField(max_length=50, blank=True)
     about = models.TextField(blank=True)
     website = models.URLField(max_length=255, blank=True)
+
+    def __str__(self):
+        return '%s (X%s)' % (self.name, self.party.ident)
 
 
 class Source(CommonModel):
     name = models.CharField(max_length=255)
     url = models.URLField(max_length=255, blank=True)
     about = models.TextField(blank=True)
+
+    def __str__(self):
+        return self.name
 
 
 class Promise(CommonModel):
@@ -62,6 +71,9 @@ class Promise(CommonModel):
     status = models.CharField(max_length=50, choices=PROMISE_STATUS_CHOICES)
     status_detail = models.TextField(blank=True)
 
+    def __str__(self):
+        return self.title
+
 
 class PromiseSource(CommonModel):
     promise = models.ForeignKey(Promise, related_name='sources')
@@ -69,6 +81,9 @@ class PromiseSource(CommonModel):
     title = models.CharField(max_length=255, blank=True)
     url = models.URLField(max_length=255, blank=True)
     detail = models.TextField(blank=True)
+
+    def __str__(self):
+        return self.url
 
 
 # class PromiseOccasion(CommonModel):
