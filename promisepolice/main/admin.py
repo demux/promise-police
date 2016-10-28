@@ -7,6 +7,8 @@ class SourceInline(admin.StackedInline):
 
 
 class ModelAdmin(admin.ModelAdmin):
+    readonly_fields = ('dt_created', 'dt_modified', 'created_by', 'modified_by')
+
     def save_model(self, request, obj, form, change):
         if request:
             if obj.created_by:
