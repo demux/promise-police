@@ -183,3 +183,7 @@ ENV/
 # Custom
 *.sqlite3
 collected_static/
+*.lock
+webpack-stats.json
+node_modules/
+assets/webpack_bundles

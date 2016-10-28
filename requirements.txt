@@ -1,0 +1,5 @@
+Django==1.10.2
+django-pagedown==0.1.1
+django-webpack-loader==0.3.3
+djangorestframework==3.5.1
+requests==2.11.1

@@ -10,6 +10,15 @@ PROMISE_STATUS_CHOICES = (
 )
 
 
+TRUTHFULNESS_CHOICES = (
+    ('True', 'Dagsatt'),
+    ('Mostly True', 'Næstum því satt'),
+    ('Half True', 'Hálfsannleikur'),
+    ('Mostly False', 'Aðallega ósatt'),
+    ('False', 'Haugalýgi'),
+)
+
+
 class CommonModel(models.Model):
     dt_created = models.DateTimeField('Búið til', auto_now_add=True)
     dt_modified = models.DateTimeField('Breytt', auto_now=True)
@@ -96,7 +105,7 @@ class Source(CommonModel):
 class Promise(CommonModel):
     title = models.CharField(max_length=255)
     detail = models.TextField(blank=True)
-    person = models.ForeignKey(Person, blank=True, null=True)
+    person = models.ForeignKey(Person, blank=True, null=True, related_name='promises')
     party = models.ForeignKey(Party, blank=True, null=True, related_name='promises')
     dt_promised = models.DateTimeField(blank=True, null=True)
     status = models.CharField(max_length=50, choices=PROMISE_STATUS_CHOICES)
@@ -110,8 +119,7 @@ class Promise(CommonModel):
         verbose_name_plural = 'Loforð'
 
 
-class PromiseSource(CommonModel):
-    promise = models.ForeignKey(Promise, related_name='sources')
+class AbstractSource(CommonModel):
     source = models.ForeignKey(Source)
     title = models.CharField(max_length=255, blank=True)
     url = models.URLField(max_length=255, blank=True)
@@ -123,11 +131,31 @@ class PromiseSource(CommonModel):
     class Meta:
         verbose_name = 'Heimild'
         verbose_name_plural = 'Heimildir'
+        abstract = True
 
 
-# class PromiseOccasion(CommonModel):
-#     dt_promised = models.DateTimeField(blank=True, null=True)
+class PromiseSource(AbstractSource):
+    promise = models.ForeignKey(Promise, related_name='sources')
 
 
-# class Claim(models.Model):
-#     pass
+class Claim(CommonModel):
+    title = models.CharField(max_length=255)
+    detail = models.TextField(blank=True)
+    person = models.ForeignKey(Person, blank=True, null=True, related_name='claims')
+    party = models.ForeignKey(Party, blank=True, null=True, related_name='claims')
+    dt_claimed = models.DateTimeField(blank=True, null=True)
+    truthfulness = models.CharField('Sannleiksgildi', max_length=50, choices=TRUTHFULNESS_CHOICES)
+
+    persons_accused = models.ManyToManyField(Person, related_name='accused_by_claims')
+    parties_accused = models.ManyToManyField(Party, related_name='accused_by_claims')
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = 'Fullyrðing'
+        verbose_name_plural = 'Fullyrðingar'
+
+
+class ClaimSource(AbstractSource):
+    claim = models.ForeignKey(Claim, related_name='sources')

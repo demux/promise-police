@@ -1,13 +1,18 @@
 from django.contrib import admin
+
+from pagedown.widgets import AdminPagedownWidget
+
 from .models import *
 
 
-class SourceInline(admin.StackedInline):
-    model = PromiseSource
-
-
-class ModelAdmin(admin.ModelAdmin):
+class ModelAdminMixin:
     readonly_fields = ('dt_created', 'dt_modified', 'created_by', 'modified_by')
+
+    formfield_overrides = {
+        models.TextField: {
+            'widget': AdminPagedownWidget
+        }
+    }
 
     def save_model(self, request, obj, form, change):
         if request:
@@ -18,9 +23,28 @@ class ModelAdmin(admin.ModelAdmin):
         obj.save()
 
 
+class ModelAdmin(ModelAdminMixin, admin.ModelAdmin):
+    pass
+
+
+class SourceInline(ModelAdminMixin, admin.StackedInline):
+    model = PromiseSource
+    extra = 0
+
+
 @admin.register(Promise)
 class PromiseAdmin(ModelAdmin):
     inlines = (SourceInline,)
+
+
+class ClaimSourceInline(ModelAdminMixin, admin.StackedInline):
+    model = ClaimSource
+    extra = 0
+
+
+@admin.register(Claim)
+class ClaimAdmin(ModelAdmin):
+    inlines = (ClaimSourceInline,)
 
 
 @admin.register(Person)
