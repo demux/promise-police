@@ -182,3 +182,4 @@ ENV/
 
 # Custom
 *.sqlite3
+collected_static/
