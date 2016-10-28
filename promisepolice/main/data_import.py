@@ -41,7 +41,8 @@ def import_mps():
     for mp in mps:
         url = '%s/%s' % (base_url, mp['id'])
 
-        slug = slugify(mp['slug'])
+        # Make sure slugs are correctly formatted:
+        slug = slugify(mp['slug'].replace('_', '-'))
 
         try:
             person = Person.objects.get(slug=slug)
@@ -54,7 +55,7 @@ def import_mps():
         person.name = mp['name']
         person.slug = slug
         person.about = mp['description']
-        person.party = Party.objects.get(slug=mp['partySlug'])
+        person.party = Party.objects.get(slug=slugify(mp['partySlug']))
         person.image_url = mp['imagePath']
 
         person.is_mp = True

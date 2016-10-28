@@ -35,24 +35,28 @@ class CommonModel(models.Model):
 
 
 class Party(CommonModel):
-    name = models.CharField(max_length=255)
+    name = models.CharField('Nafn', max_length=255)
     slug = models.SlugField(blank=True)
-    ident = models.CharField(max_length=10)
-    about = models.TextField(blank=True)
-    website = models.URLField(max_length=255, blank=True)
+    ident = models.CharField('Stafur', max_length=10)
+    about = models.TextField('Um flokkinn', blank=True)
+    website = models.URLField('Vefur', max_length=255, blank=True)
 
-    image_url = models.URLField(max_length=255, blank=True)
+    image_url = models.URLField('Mynd', max_length=255, blank=True)
     # http://api-dot-thingmenn.appspot.com/api/parties/piratar
-    api_ref = models.URLField(max_length=255, blank=True)
+    api_ref = models.URLField('API tilvísun', max_length=255, blank=True)
     # http://thingmenn.is/thingflokkar/framsoknarflokkur
-    ref = models.URLField(max_length=255, blank=True)
+    ref = models.URLField('Tilvísun', max_length=255, blank=True)
 
     def __str__(self):
         return '%s (X%s)' % (self.name, self.ident)
 
+    class Meta:
+        verbose_name = 'Flokkur'
+        verbose_name_plural = 'Flokkar'
+
 
 class Person(CommonModel):
-    name = models.CharField(max_length=255)
+    name = models.CharField('Nafn', max_length=255)
     slug = models.SlugField(blank=True)
     party = models.ForeignKey(Party, blank=True, null=True, related_name='members')
     ssn = models.CharField(max_length=50, blank=True)
@@ -71,6 +75,10 @@ class Person(CommonModel):
     def __str__(self):
         return '%s (X%s)' % (self.name, self.party.ident)
 
+    class Meta:
+        verbose_name = 'Aðili'
+        verbose_name_plural = 'Aðilar'
+
 
 class Source(CommonModel):
     name = models.CharField(max_length=255)
@@ -79,6 +87,10 @@ class Source(CommonModel):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name = 'Miðill'
+        verbose_name_plural = 'Miðlar'
 
 
 class Promise(CommonModel):
@@ -93,6 +105,10 @@ class Promise(CommonModel):
     def __str__(self):
         return self.title
 
+    class Meta:
+        verbose_name = 'Loforð'
+        verbose_name_plural = 'Loforð'
+
 
 class PromiseSource(CommonModel):
     promise = models.ForeignKey(Promise, related_name='sources')
@@ -103,6 +119,10 @@ class PromiseSource(CommonModel):
 
     def __str__(self):
         return self.url
+
+    class Meta:
+        verbose_name = 'Heimild'
+        verbose_name_plural = 'Heimildir'
 
 
 # class PromiseOccasion(CommonModel):
