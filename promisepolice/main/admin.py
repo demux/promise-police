@@ -45,6 +45,7 @@ class ClaimSourceInline(ModelAdminMixin, admin.StackedInline):
 @admin.register(Claim)
 class ClaimAdmin(ModelAdmin):
     inlines = (ClaimSourceInline,)
+    filter_horizontal = ('persons_accused', 'parties_accused')
 
 
 @admin.register(Person)

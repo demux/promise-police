@@ -146,8 +146,12 @@ class Claim(CommonModel):
     dt_claimed = models.DateTimeField(blank=True, null=True)
     truthfulness = models.CharField('Sannleiksgildi', max_length=50, choices=TRUTHFULNESS_CHOICES)
 
-    persons_accused = models.ManyToManyField(Person, related_name='accused_by_claims')
-    parties_accused = models.ManyToManyField(Party, related_name='accused_by_claims')
+    persons_accused = models.ManyToManyField(Person, verbose_name='Ásakaðir aðilar',
+                                             related_name='accused_by_claims')
+    parties_accused = models.ManyToManyField(Party, verbose_name='Ásakapir flokkar',
+                                             related_name='accused_by_claims')
+
+    the_truth = models.TextField('Sannleikurinn', blank=True)
 
     def __str__(self):
         return self.title
