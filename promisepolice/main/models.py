@@ -147,9 +147,9 @@ class Claim(CommonModel):
     truthfulness = models.CharField('Sannleiksgildi', max_length=50, choices=TRUTHFULNESS_CHOICES)
 
     persons_accused = models.ManyToManyField(Person, verbose_name='Ásakaðir aðilar',
-                                             related_name='accused_by_claims', null=True)
+                                             related_name='accused_by_claims', blank=True)
     parties_accused = models.ManyToManyField(Party, verbose_name='Ásakapir flokkar',
-                                             related_name='accused_by_claims', null=True)
+                                             related_name='accused_by_claims', blank=True)
 
     the_truth = models.TextField('Sannleikurinn', blank=True)
 
