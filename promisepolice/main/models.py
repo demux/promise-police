@@ -28,17 +28,6 @@ class CommonModel(models.Model):
     modified_by = models.ForeignKey(User, verbose_name='Breytt af',
                                     null=True, editable=False, related_name='+')
 
-    # def save(self, commit=True, request=None):
-    #     obj = super().save(commit=False)
-
-    #     if request:
-    #         if obj.created_by:
-    #             obj.modified_by = request.user
-    #         else:
-    #             obj.created_by = request.user
-
-    #     obj.save()
-
     class Meta:
         abstract = True
 
@@ -68,7 +57,6 @@ class Person(CommonModel):
     name = models.CharField('Nafn', max_length=255)
     slug = models.SlugField(blank=True)
     party = models.ForeignKey(Party, blank=True, null=True, related_name='members')
-    ssn = models.CharField(max_length=50, blank=True)
     about = models.TextField(blank=True)
     website = models.URLField(max_length=255, blank=True)
 
