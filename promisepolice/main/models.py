@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.db import models
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import User
+
 
 
 PROMISE_STATUS_CHOICES = (
@@ -30,6 +33,26 @@ class CommonModel(models.Model):
 
     class Meta:
         abstract = True
+
+
+class Note(models.Model):
+    dt_created = models.DateTimeField('Skrifað', auto_now_add=True)
+    dt_modified = models.DateTimeField('Breytt', auto_now=True)
+
+    user = models.ForeignKey(User, null=True, editable=False, related_name='notes')
+
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+    content = models.TextField(blank=True)
+
+    def __str__(self):
+        return '%s @ %s' % (self.user, self.dt_created)
+
+    class Meta:
+        verbose_name = 'Athugasemd'
+        verbose_name_plural = 'Athugasemdir'
 
 
 class Party(CommonModel):
@@ -99,6 +122,8 @@ class Promise(CommonModel):
     status = models.CharField(max_length=50, choices=PROMISE_STATUS_CHOICES)
     status_detail = models.TextField(blank=True)
 
+    notes = GenericRelation(Note)
+
     def __str__(self):
         return self.title
 
@@ -140,6 +165,8 @@ class Claim(CommonModel):
                                              related_name='accused_by_claims', blank=True)
 
     the_truth = models.TextField('Sannleikurinn', blank=True)
+
+    notes = GenericRelation(Note)
 
     def __str__(self):
         return self.title
